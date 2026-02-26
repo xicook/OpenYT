@@ -1,32 +1,28 @@
 package com.openyt.app.adapters;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
+import androidx.recyclerview.widget.RecyclerView;
 import com.openyt.app.R;
 import com.openyt.app.models.UpdateMessage;
-
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Adapter para a lista de mensagens de update.
- */
 public class UpdateAdapter extends RecyclerView.Adapter<UpdateAdapter.UpdateViewHolder> {
 
-    private List<UpdateMessage> messages = new ArrayList<>();
     private final Context context;
+    private final List<UpdateMessage> messages = new ArrayList<>();
 
     public UpdateAdapter(Context context) {
         this.context = context;
     }
 
-    public void setMessages(List<UpdateMessage> messages) {
-        this.messages = messages;
+    public void setMessages(List<UpdateMessage> newMessages) {
+        messages.clear();
+        messages.addAll(newMessages);
         notifyDataSetChanged();
     }
 
@@ -38,28 +34,21 @@ public class UpdateAdapter extends RecyclerView.Adapter<UpdateAdapter.UpdateView
 
     @Override
     public void onBindViewHolder(UpdateViewHolder holder, int position) {
-        holder.bind(messages.get(position));
+        UpdateMessage msg = messages.get(position);
+        holder.txtMessage.setText(msg.getText());
+        holder.txtTimestamp.setText(msg.getTimestamp());
     }
 
     @Override
-    public int getItemCount() {
-        return messages.size();
-    }
+    public int getItemCount() { return messages.size(); }
 
-    class UpdateViewHolder extends RecyclerView.ViewHolder {
-
-        private final TextView txtMessage;
-        private final TextView txtDate;
+    static class UpdateViewHolder extends RecyclerView.ViewHolder {
+        TextView txtMessage, txtTimestamp;
 
         UpdateViewHolder(View itemView) {
             super(itemView);
-            txtMessage = itemView.findViewById(R.id.txt_message);
-            txtDate    = itemView.findViewById(R.id.txt_date);
-        }
-
-        void bind(UpdateMessage msg) {
-            txtMessage.setText(msg.getText());
-            txtDate.setText(msg.getFormattedDate());
+            txtMessage   = itemView.findViewById(R.id.txt_message);
+            txtTimestamp = itemView.findViewById(R.id.txt_timestamp);
         }
     }
 }

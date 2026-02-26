@@ -4,108 +4,80 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
-
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import com.openyt.app.R;
 import com.openyt.app.activities.PlayerActivity;
 import com.openyt.app.adapters.VideoAdapter;
 import com.openyt.app.models.Video;
 import com.openyt.app.network.ApiClient;
-import com.openyt.app.utils.JsonParser;
-
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Fragmento da tela inicial — exibe vídeos em destaque (trending).
- */
 public class HomeFragment extends Fragment {
 
     private RecyclerView recyclerView;
-    private ProgressBar progressBar;
-    private LinearLayout layoutError;
-    private TextView txtError;
-    private Button btnRetry;
-
     private VideoAdapter adapter;
+    private TextView txtEmpty;
     private final Handler mainHandler = new Handler(Looper.getMainLooper());
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
-
-        recyclerView = view.findViewById(R.id.recycler_videos);
-        progressBar  = view.findViewById(R.id.progress_bar);
-        layoutError  = view.findViewById(R.id.layout_error);
-        txtError     = view.findViewById(R.id.txt_error);
-        btnRetry     = view.findViewById(R.id.btn_retry);
+        recyclerView = view.findViewById(R.id.recycler_home);
+        txtEmpty     = view.findViewById(R.id.txt_empty);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapter = new VideoAdapter(getContext(), new VideoAdapter.OnVideoClickListener() {
-            @Override
-            public void onVideoClick(Video video) {
-                openPlayer(video);
-            }
-        });
+        adapter = new VideoAdapter(getContext(), video -> openPlayer(video));
         recyclerView.setAdapter(adapter);
 
-        btnRetry.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                loadTrending();
-            }
-        });
-
-        loadTrending();
+        loadVideos();
         return view;
     }
 
-    private void loadTrending() {
-        showLoading();
-
-        ApiClient.getInstance().getTrending("BR", new ApiClient.ApiCallback() {
+    private void loadVideos() {
+        ApiClient.getInstance().getTrending(new ApiClient.ApiCallback() {
             @Override
-            public void onSuccess(final JsonObject response) {
-                mainHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (!isAdded()) return;
-
-                        try {
-                            JsonArray videosArray = response.getAsJsonArray("videos");
-                            List<Video> videos = JsonParser.parseVideoList(videosArray);
-
-                            if (videos.isEmpty()) {
-                                showError(getString(R.string.no_videos));
-                            } else {
-                                adapter.setVideos(videos);
-                                showContent();
-                            }
-                        } catch (Exception e) {
-                            showError(getString(R.string.error_server));
+            public void onSuccess(JsonObject response) {
+                mainHandler.post(() -> {
+                    if (!isAdded()) return;
+                    try {
+                        JsonArray arr = response.getAsJsonArray("videos");
+                        List<Video> videos = new ArrayList<>();
+                        for (int i = 0; i < arr.size(); i++) {
+                            JsonObject v = arr.get(i).getAsJsonObject();
+                            videos.add(new Video(
+                                v.get("id").getAsString(),
+                                v.get("title").getAsString(),
+                                v.has("channel") && !v.get("channel").isJsonNull() ? v.get("channel").getAsString() : "",
+                                v.has("thumbnail") && !v.get("thumbnail").isJsonNull() ? v.get("thumbnail").getAsString() : "",
+                                v.has("duration") && !v.get("duration").isJsonNull() ? v.get("duration").getAsString() : "",
+                                v.has("views") && !v.get("views").isJsonNull() ? v.get("views").getAsLong() : 0
+                            ));
                         }
+                        if (videos.isEmpty()) {
+                            txtEmpty.setVisibility(View.VISIBLE);
+                        } else {
+                            txtEmpty.setVisibility(View.GONE);
+                            adapter.setVideos(videos);
+                        }
+                    } catch (Exception e) {
+                        txtEmpty.setVisibility(View.VISIBLE);
                     }
                 });
             }
-
             @Override
-            public void onError(final String message) {
-                mainHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (!isAdded()) return;
-                        showError(getString(R.string.error_server));
-                    }
+            public void onError(String message) {
+                mainHandler.post(() -> {
+                    if (!isAdded()) return;
+                    txtEmpty.setVisibility(View.VISIBLE);
                 });
             }
         });
@@ -113,31 +85,10 @@ public class HomeFragment extends Fragment {
 
     private void openPlayer(Video video) {
         Intent intent = new Intent(getContext(), PlayerActivity.class);
-        intent.putExtra("video_id",    video.getId());
+        intent.putExtra("video_id", video.getId());
         intent.putExtra("video_title", video.getTitle());
         intent.putExtra("video_channel", video.getChannel());
-        intent.putExtra("video_views",   video.getViews());
+        intent.putExtra("video_views", video.getViews());
         startActivity(intent);
-    }
-
-    // ─── Estados de UI ──────────────────────────
-
-    private void showLoading() {
-        progressBar.setVisibility(View.VISIBLE);
-        recyclerView.setVisibility(View.GONE);
-        layoutError.setVisibility(View.GONE);
-    }
-
-    private void showContent() {
-        progressBar.setVisibility(View.GONE);
-        recyclerView.setVisibility(View.VISIBLE);
-        layoutError.setVisibility(View.GONE);
-    }
-
-    private void showError(String message) {
-        progressBar.setVisibility(View.GONE);
-        recyclerView.setVisibility(View.GONE);
-        layoutError.setVisibility(View.VISIBLE);
-        txtError.setText(message);
     }
 }
