@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- English strings (en-US) -->
+<resources>
+    <string name="app_name">OpenYT</string>
+
+    <!-- Navigation -->
+    <string name="nav_home">Home</string>
+    <string name="nav_search">Search</string>
+    <string name="nav_updates">Updates</string>
+
+    <!-- Home -->
+    <string name="trending_title">Trending</string>
+    <string name="loading">Loading…</string>
+    <string name="error_loading">Failed to load. Tap to retry.</string>
+    <string name="retry">Retry</string>
+    <string name="no_videos">No videos found.</string>
+
+    <!-- Search -->
+    <string name="search_hint">Search videos…</string>
+    <string name="search_results">Results for: %1$s</string>
+    <string name="search_empty">Type something to search.</string>
+
+    <!-- Player -->
+    <string name="player_loading">Loading video…</string>
+    <string name="player_error">Error playing video.</string>
+    <string name="views">%1$s views</string>
+    <string name="description_label">Description</string>
+    <string name="show_more">Show more</string>
+    <string name="show_less">Show less</string>
+
+    <!-- Updates -->
+    <string name="updates_title">News &amp; Updates</string>
+    <string name="updates_empty">No news at the moment.</string>
+    <string name="updates_from_dev">From the OpenYT team</string>
+
+    <!-- Errors -->
+    <string name="error_no_internet">No internet connection.</string>
+    <string name="error_server">Server error. Please try again later.</string>
+</resources>

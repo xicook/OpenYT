@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Strings padrão (Português Brasileiro) -->
+<!-- Para en-US: crie res/values-en/strings.xml com as traduções -->
+<resources>
+    <string name="app_name">OpenYT</string>
+
+    <!-- Navegação -->
+    <string name="nav_home">Início</string>
+    <string name="nav_search">Pesquisar</string>
+    <string name="nav_updates">Updates</string>
+
+    <!-- Home -->
+    <string name="trending_title">Em Alta</string>
+    <string name="loading">Carregando…</string>
+    <string name="error_loading">Erro ao carregar. Toque para tentar novamente.</string>
+    <string name="retry">Tentar novamente</string>
+    <string name="no_videos">Nenhum vídeo encontrado.</string>
+
+    <!-- Pesquisa -->
+    <string name="search_hint">Pesquisar vídeos…</string>
+    <string name="search_results">Resultados para: %1$s</string>
+    <string name="search_empty">Digite algo para pesquisar.</string>
+
+    <!-- Player -->
+    <string name="player_loading">Carregando vídeo…</string>
+    <string name="player_error">Erro ao reproduzir o vídeo.</string>
+    <string name="views">%1$s visualizações</string>
+    <string name="description_label">Descrição</string>
+    <string name="show_more">Mostrar mais</string>
+    <string name="show_less">Mostrar menos</string>
+
+    <!-- Updates -->
+    <string name="updates_title">Notícias e Updates</string>
+    <string name="updates_empty">Nenhuma novidade por enquanto.</string>
+    <string name="updates_from_dev">Da equipe OpenYT</string>
+
+    <!-- Erros gerais -->
+    <string name="error_no_internet">Sem conexão com a internet.</string>
+    <string name="error_server">Erro no servidor. Tente mais tarde.</string>
+</resources>
