@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
 
 public class ApiClient {
 
-    private static final String BASE_URL = "https://SEU_IP_OU_DOMINIO:3001";
+    private static final String BASE_URL = "https://x1co.com.br:3001";
 
     public interface ApiCallback {
         void onSuccess(JsonObject response);
