@@ -70,6 +70,10 @@ public class ApiClient {
         get(BASE_URL + "/video/" + videoId, callback);
     }
 
+    public void getDirectUrl(String videoId, ApiCallback callback) {
+        get(BASE_URL + "/direct/" + videoId, callback);
+    }
+
     public void getUpdates(ApiCallback callback) {
         get(BASE_URL + "/updates", callback);
     }
