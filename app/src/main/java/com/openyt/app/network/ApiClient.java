@@ -34,10 +34,6 @@ public class ApiClient {
         return instance;
     }
 
-    public String getStreamUrl(String videoId) {
-        return BASE_URL + "/hls/" + videoId + "/master.m3u8";
-    }
-
     private void get(String url, ApiCallback callback) {
         Request request = new Request.Builder().url(url).build();
         client.newCall(request).enqueue(new Callback() {
@@ -71,7 +67,11 @@ public class ApiClient {
     }
 
     public void getDirectUrl(String videoId, ApiCallback callback) {
-        get(BASE_URL + "/direct/" + videoId, callback);
+        getDirectUrl(videoId, "480", callback);
+    }
+
+    public void getDirectUrl(String videoId, String quality, ApiCallback callback) {
+        get(BASE_URL + "/direct/" + videoId + "?quality=" + quality, callback);
     }
 
     public void getUpdates(ApiCallback callback) {
